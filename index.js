@@ -2,11 +2,10 @@ require('dotenv').config();
 require('./services/passport');
 const express = require('express');
 const app = express();
-const {Client} = require('pg')
-const client = new Client()
 const cookieSession = require('cookie-session');
 const passport = require('passport');
 const keys = require('./config/prodKeys');
+
 
 app.use(express.json());
 app.use(
