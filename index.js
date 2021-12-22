@@ -1,12 +1,15 @@
 require('dotenv').config();
 require('./services/passport');
 const express = require('express');
+const cors = require('cors');
+const bodyParser = require('body-parser');
 const app = express();
 const cookieSession = require('cookie-session');
 const passport = require('passport');
 const keys = require('./config/prodKeys');
 
-
+app.use(cors());
+app.use(bodyParser.json());
 app.use(express.json());
 app.use(
   cookieSession({
@@ -17,6 +20,7 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
+require('./routes/productRoutes')(app);
 require('./routes/authRoutes')(app);
 require('./routes/billingRoutes')(app);
 
