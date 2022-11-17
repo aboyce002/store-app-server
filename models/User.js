@@ -1,4 +1,4 @@
-const {Model} = require('objection');
+const { Model } = require('objection');
 
 class User extends Model {
   static get tableName(){
@@ -6,7 +6,7 @@ class User extends Model {
   }
 
   static get idColumn() {
-    return '_id';
+    return 'id';
   }
   
   static get jsonSchema () {
@@ -15,7 +15,7 @@ class User extends Model {
         required: [ 'google_id' ],
 
         properties: {
-            _id: {type: 'integer'},
+            id: {type: 'integer'},
             google_id: {type: 'string'}
         }
     };

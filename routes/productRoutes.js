@@ -1,24 +1,106 @@
 const express = require("express");
 const router = express.Router();
-const productModel = require("../models/product");
+const Product = require("../models/Product");
 
 module.exports = app => { 
-  app.get('/product/:id', (req, res) => {
+  app.get('/api/product/:id', async (req, res) => {
     let id = parseInt(req.params.id)
-    productModel.query()
-        .where('id', id)
-        .then(user => {
-            res.json(user)
+    await Product.query()
+      .findById(id)
+      .then(product => {
+          res.json(product)
+      })
+      .catch(err => {
+        res.status(500).send({
+          message:
+            err.message || "An error occurred while fetching the product."
         })
+      })
   });
 
-  app.get('/products', (req, res) => {
-    productModel.query((error, data) => {
-      if (error) {
-        return next(error);
-      } else {
-        res.json(data);
+  //To do: filter by id, newest stuff shows first
+  app.use('/api/products', async (req, res) => {
+    const filters = req.query;
+    const data = await Product.query()
+    .catch(err => {
+      res.status(500).send({
+        filteredProducts,
+        message:
+          err.message || "An error occurred while fetching the product."
+      })
+    })
+
+    const filteredProducts = data.filter(product => {
+      let isValid = true;
+      for (key in filters) {
+        console.log(key, product[key], filters[key]);
+        isValid = isValid && product[key] == filters[key];
       }
-    });
+      return isValid;
+    })
+    
+    res.json(filteredProducts)
+  });
+
+  /*app.get('/api/products', async (req, res) => {
+    await Product.query()
+      .then(product => {
+        res.json(product)
+    })
+    .catch(err => {
+      res.status(500).send({
+        message:
+          err.message || "An error occurred while fetching products."
+      })
+    })
+  });*/
+
+  app.post('/api/products', async (req, res) => {
+    const { title, description, category, image, price, quantity, condition, availability } = req.body;
+    await Product.query()
+      .insert({
+        title: title,
+        description: description,
+        category: category,
+        image: image,
+        price: price,
+        quantity: quantity,
+        condition: condition,
+        availability: availability
+      })
+      .then(product => {
+        res.json(product)
+      })
+      .catch(err => {
+        res.status(500).send({
+          message:
+            err.message || "An error occurred while creating the product."
+        })
+      })
+  });
+
+  app.put('/api/product/:id', async (req, res) => {
+    const { id, title, description, category, image, price, quantity, condition, availability } = req.body;
+    await Product.query()
+      .update({
+        id: id,
+        title: title,
+        description: description,
+        category: category,
+        image: image,
+        price: price,
+        quantity: quantity,
+        condition: condition,
+        availability: availability
+      })
+      .then(product => {
+        res.json(product)
+      })
+      .catch(err => {
+        res.status(500).send({
+          message:
+            err.message || "An error occurred while editing the product."
+        });
+      });
   });
 };

@@ -7,9 +7,15 @@ const app = express();
 const cookieSession = require('cookie-session');
 const passport = require('passport');
 const keys = require('./config/prodKeys');
+const dbSetup = require('./config/dbSetup');
 
 app.use(cors());
 app.use(bodyParser.json());
+app.use(
+  bodyParser.urlencoded({
+    extended: true,
+  })
+)
 app.use(express.json());
 app.use(
   cookieSession({
@@ -17,6 +23,7 @@ app.use(
     keys: [keys.cookieKey]
   })
 );
+dbSetup();
 app.use(passport.initialize());
 app.use(passport.session());
 

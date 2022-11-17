@@ -1,4 +1,4 @@
-const {Model} = require('objection');
+const { Model } = require('objection');
 
 class Product extends Model {
   static get tableName(){
@@ -6,16 +6,16 @@ class Product extends Model {
   }
 
   static get idColumn() {
-    return '_id';
+    return 'id';
   }
 
   static get jsonSchema () {
     return {
         type: 'object',
-        required: [ 'title, description, category, image, price' ],
+        required: ['title', 'description', 'category', 'image', 'price'],
 
         properties: {
-            _id: {type: 'integer'},
+            id: {type: 'integer'},
             title: {type: 'string'},
             description: {type: 'string'},
             category: {type: 'string'},

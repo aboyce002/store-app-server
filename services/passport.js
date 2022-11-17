@@ -1,22 +1,22 @@
 const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
-const dbSetup = require('../config/dbSetup');
-const User = require('../models/user');
+const User = require('../models/User');
 const keys = require('../config/prodKeys');
 
-dbSetup();
-
 passport.serializeUser((user, done) => {
-  done(null, user._id);
+  done(null, user.id);
 });
 
-passport.deserializeUser((id, done) => {
-  User.query().findById(id).then(user => {
-    done(null, user);
-  });
+passport.deserializeUser(async (id, done) => {
+  await User.query()
+    .findById(id)
+    .then(user => {
+      done(null, user);
+    });
 });
 
-passport.use(new GoogleStrategy({
+passport.use(new GoogleStrategy(
+  {
     clientID: keys.googleClientID,
     clientSecret: keys.googleClientSecret,
     callbackURL: '/auth/google/callback',
