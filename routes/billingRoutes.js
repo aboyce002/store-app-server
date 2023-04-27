@@ -1,26 +1,31 @@
 const keys = require('../config/prodKeys');
 const stripe = require('stripe')(keys.stripeSecretKey);
 const authorize = require('../middlewares/authorize');
+const validatePrices = require('../middlewares/validatePrices');
 
 module.exports = app => {
-  app.post('/api/stripe', authorize, async (req, res) => {
+  app.get('/api/stripe/secret', async (req, res) => {
+    //const intent = // ... Fetch or create the PaymentIntent
+    res.json({client_secret: intent.client_secret});
+  });
 
-    const token = req.body.data.token;
-    const amount = req.body.data.amount;
-
+  app.post('/api/stripe/create-payment-intent', authorize, validatePrices, async (req, res) => {
+    // Get token for product data, cross-check ids from client to db and print a msg saying prices changed if they were different
+    const { price } = req.body;
     try {
-        const charge = await stripe.charges.create({
-            amount: amount,
+        const paymentIntent = await stripe.paymentIntents.create({
+            amount: price,
             currency: 'usd',
-            description: '$15 for a plushie',
-            source: token
+            //payment_method_types: ['card'],
+            //source: token,
+            automatic_payment_methods: {
+              enabled: true,
+            },
         });
-
-        req.user.credits += 5;
-
-        const user = await req.user.save();
-
-        res.send(user);
+        //req.user.credits += 5;
+        res.send({
+          clientSecret: paymentIntent.client_secret,
+        });
     } catch (err) {
         console.log(err);
     }

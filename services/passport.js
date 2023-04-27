@@ -27,13 +27,18 @@ passport.use(new GoogleStrategy(
        console.log('refresh token: ', refreshToken);
        console.log('profile: ', profile);
        console.log('profile ID: ', profile.id);
+       console.log('email: ', profile.emails[0].value);
        const existingUser = await User.query().findOne({ google_id: profile.id });
 
         if (existingUser) {
           return done(null, existingUser);
         }
 
-        const user = await User.query().insert({ google_id: profile.id });
+        const user = await User.query()
+          .insert({ 
+            google_id: profile.id,
+            email: profile.emails[0].value
+          });
         done(null, user);
     }
   )

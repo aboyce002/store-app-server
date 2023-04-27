@@ -18,15 +18,33 @@ module.exports = app => {
       })
   });
 
-  //To do: filter by id, newest stuff shows first
-  app.use('/api/products', async (req, res) => {
+  app.get('/api/products', async (req, res) => {
+    await Product.query()
+      // Sorts products by largest to smallest id so newer products(higher ids) are first
+      // Implement pagination once amount of products increases
+      .orderBy('id', 'desc')
+      .then(product => {
+        res.json(product)
+    })
+    .catch(err => {
+      res.status(500).send({
+        message:
+          err.message || "An error occurred while fetching products."
+      })
+    })
+  });
+
+  // Maybe a backend filter? Fine on the frontend for now
+  app.get('/api/products/filter', async (req, res) => {
     const filters = req.query;
     const data = await Product.query()
+    // do filtering here
+    .orderBy('id', 'desc')
     .catch(err => {
       res.status(500).send({
         filteredProducts,
         message:
-          err.message || "An error occurred while fetching the product."
+          err.message || "An error occurred while fetching products."
       })
     })
 
@@ -41,19 +59,6 @@ module.exports = app => {
     
     res.json(filteredProducts)
   });
-
-  /*app.get('/api/products', async (req, res) => {
-    await Product.query()
-      .then(product => {
-        res.json(product)
-    })
-    .catch(err => {
-      res.status(500).send({
-        message:
-          err.message || "An error occurred while fetching products."
-      })
-    })
-  });*/
 
   app.post('/api/products', async (req, res) => {
     const { title, description, category, image, price, quantity, condition, availability } = req.body;

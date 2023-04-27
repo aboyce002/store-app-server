@@ -11,21 +11,33 @@ class Product extends Model {
 
   static get jsonSchema () {
     return {
-        type: 'object',
-        required: ['title', 'description', 'category', 'image', 'price'],
+      type: 'object',
+      required: ['title', 'description', 'category', 'image', 'price'],
 
-        properties: {
-            id: {type: 'integer'},
-            title: {type: 'string'},
-            description: {type: 'string'},
-            category: {type: 'string'},
-            image: {type: 'string'},
-            price: {type: 'number'},
-            quantity: {type: 'integer'},
-            condition: {type: 'string'},
-            availability: {type: 'string'}
-        }
-    };
+      properties: {
+          id: {type: 'integer'},
+          title: {type: 'string'},
+          description: {type: 'string'},
+          image: {type: 'string'},
+          price: {type: 'number'},
+          quantity: {type: 'integer'},
+          condition: {
+            type: 'string',
+            enum: ['for sale', 'new', 'preorder'],
+            default: 'for sale'
+          },
+          availability: {
+            type: 'string',
+            enum: ['available', 'unavailable', 'sold out'],
+            default: 'available'
+          },
+          category: {
+            type: 'string',
+            enum: ['charms', 'prints', 'plushies', 'stickers'],
+            default: 'prints'
+          },
+      }
+    }
   }
 }
 

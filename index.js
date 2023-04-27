@@ -27,9 +27,10 @@ dbSetup();
 app.use(passport.initialize());
 app.use(passport.session());
 
-require('./routes/productRoutes')(app);
 require('./routes/authRoutes')(app);
 require('./routes/billingRoutes')(app);
+require('./routes/productRoutes')(app);
+require('./routes/userRoutes')(app);
 
 if (process.env.NODE_ENV === "production") {
   app.use((req, res, next) => {
