@@ -2,6 +2,7 @@ const keys = require('../config/prodKeys');
 const authorize = require('../middlewares/authorize');
 const verifyPass = require('../middlewares/encryptedPassVerify');
 const encryptPass = require('../middlewares/encryptPass');
+const getUserPass = require('../middlewares/getPassFromEmail')
 const User = require("../models/User");
 
 module.exports = app => {
@@ -14,32 +15,27 @@ module.exports = app => {
     res.redirect('/');
   });
 
-  app.get('/api/user/login', encryptPass, verifyPass, async (req, res) => {
-    await User.query()
-      .where('email', '=', req.body.email)
-      .where('password', '=', req.hash)
-      .limit(1)
-      .then(user => {
-        req.session.loggedIn = true;
-      })
-      .catch(err => {
-        res.status(500).send({
-          message:
-            err.message || "An error occurred while fetching the product."
-        })
-      })
-    res.json(req.result);
+  app.get('/api/user/login', getUserPass, verifyPass, async (req, res) => {
+    if (req.result == true) {
+      res.json(req.result);
+      res.redirect('/');
+    }
+    else {
+      res.json(req.result);
+      res.status(400).send(
+        "Username and password do not match."
+      )
+    }
   });
 
   app.post('/api/user/register', encryptPass, async (req, res) => {
     // return error if email is taken
     await User.query()
       .insert({
-        email: email,
-        password: req.hash
+        email: req.body.email,
+        password: req.hashedPass
       })
       .then(user => {
-        console.log("password: ", req.hash)
         res.json(user)
       })
       .catch(err => {
