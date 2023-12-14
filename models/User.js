@@ -25,20 +25,34 @@ class User extends Model {
         password: { type: 'string' },
         // Store as pure numbers i.e 3024340607
         phone: { type: 'string' },
-        /*addresses: {
-          type: 'object[]',
-          properties: {
-            street: { type: 'string' },
-            street2: { type: 'string' },
-            street3: { type: 'string' },
-            city: { type: 'string' },
-            state: { type: 'string' },
-            zip: { type: 'string' },
-            country: { type: 'string' }
-          }
-        }*/
+        // The address id of the user's current primary address
+        main_address: { type: 'integer' }
       }
     }
+  }
+
+  static get relationMappings() {
+    const Order = require('./Order');
+    const User_Address = require('./User_Address');
+
+    return {
+      orders: {
+        relation: Model.HasManyRelation,
+        modelClass: Order,
+        join: {
+          from: 'user.id',
+          to: 'order.user_id'
+        }
+      },
+      addresses: {
+        relation: Model.HasManyRelation,
+        modelClass: User_Address,
+        join: {
+          from: 'user.id',
+          to: 'user_address.user_id'
+        }
+      }
+    };
   }
 }
 

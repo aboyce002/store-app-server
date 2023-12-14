@@ -8,17 +8,22 @@ const baseURL = {
 };
 
 module.exports = app => {
+  //////////////////////
+  // Stripe
+  //////////////////////
+
   app.get('/api/stripe/secret', async (req, res) => {
-    //const intent = // ... Fetch or create the PaymentIntent
+    // const intent = // ... Fetch or create the PaymentIntent
     res.json({ client_secret: intent.client_secret });
   });
 
-  app.post('/api/stripe/create-payment-intent', authorize, validatePrices, async (req, res) => {
-    // Get token for product data, cross-check ids from client to db and print a msg saying prices changed if they were different
+  app.post('/api/stripe/create-payment-intent', validatePrices, async (req, res) => {
+    // Print a msg saying prices changed if they were different from client
+    console.log("Stripe order price: ", Math.round(req.price * 100));
     try {
-      const { price } = req.body;
       const paymentIntent = await stripe.paymentIntents.create({
-        amount: price,
+        // Price is converted to cents for Stripe to accept it
+        amount: Math.round(req.price * 100),
         currency: 'usd',
         //payment_method_types: ['card'],
         //source: token,
@@ -35,15 +40,17 @@ module.exports = app => {
     }
   });
 
+  //////////////////////
+  // Paypal
+  //////////////////////
+
   // For a fully working example, please see:
   // https://github.com/paypal-examples/docs-examples/tree/main/standard-integration
-
   // create a new order
-  app.post("/api/paypal/create-paypal-order", async (req, res) => {
+  app.post("/api/paypal/create-paypal-order", validatePrices, async (req, res) => {
     try {
-      const { price } = req.body;
-      console.log("order price: ", price);
-      const order = await createOrder(price);
+      console.log("Paypal order price: ", req.price.toFixed(2));
+      const order = await createOrder(req.price.toFixed(2));
       res.json(order);
     } catch (error) {
       console.error("Failed to create order:", error);

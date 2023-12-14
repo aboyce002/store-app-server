@@ -1,16 +1,18 @@
 const User = require("../models/User");
 
 module.exports = async (req, res, next) => {
-  console.log("email: ", req.body.email);
+  var email = req.body.email;
+  var password = req.user.password;
+  console.log("email: ", email);
   req.password = "";
   await User.query()
     .select('password')
-    .where('email', '=', req.body.email)
+    .where('email', '=', email)
     .limit(1)
     .then(dbPass => {
       req.password = dbPass;
       console.log("dbpass: ", dbPass);
-      console.log("password: ", req.user.password);
+      console.log("password: ", password);
       next();
     })
     .catch(err => {

@@ -36,6 +36,7 @@ class Product extends Model {
           enum: ['charms', 'prints', 'plushies', 'stickers'],
           default: 'prints'
         },
+        additional_images: { type: 'string[]' },
       }
     }
   }

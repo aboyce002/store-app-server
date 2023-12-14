@@ -1,21 +1,20 @@
-const keys = require('../config/prodKeys');
 const authorize = require('../middlewares/authorize');
-const verifyPass = require('../middlewares/encryptedPassVerify');
+const verifyPass = require('../middlewares/verifyPass');
 const encryptPass = require('../middlewares/encryptPass');
-const getUserPass = require('../middlewares/getPassFromEmail')
+const getUserPass = require('../middlewares/getUserPassFromEmail')
 const User = require("../models/User");
 
 module.exports = app => {
-  app.get('/api/current_user', (req, res) => {
+  app.get('/api/users/current_user', (req, res) => {
     res.send(req.user);
   });
 
-  app.get('/api/logout', (req, res) => {
+  app.get('/api/users/logout', (req, res) => {
     req.logout();
     res.redirect('/');
   });
 
-  app.get('/api/user/login', getUserPass, verifyPass, async (req, res) => {
+  app.get('/api/users/login', getUserPass, verifyPass, async (req, res) => {
     if (req.result == true) {
       res.json(req.result);
       res.redirect('/');
@@ -28,42 +27,67 @@ module.exports = app => {
     }
   });
 
-  app.post('/api/user/register', encryptPass, async (req, res) => {
+  app.post('/api/users/register', encryptPass, async (req, res) => {
     // return error if email is taken
+    const { email, password } = req.body;
     await User.query()
       .insert({
-        email: req.body.email,
+        email: email,
         password: req.hashedPass
       })
-      .then(user => {
-        res.json(user)
-      })
+      .returning('*')
       .catch(err => {
         res.status(500).send({
           message:
             err.message || "An error occurred while creating a user account."
         })
-      })
+      });
   });
 
-  app.post('/api/user/update/:id', authorize, async (req, res) => {
+  app.patch('/api/users/:id', authorize, async (req, res) => {
+    let id = parseInt(req.params.id)
     const { email, password, phone } = req.body;
-    await Product.query()
-      .insert({
+    await User.query()
+      .findById(id)
+      .patch({
         email: email,
         // Encrypt this
         password: password,
         phone: phone,
         //addresses: addresses,
       })
-      .then(product => {
-        res.json(product)
-      })
+      .returning('*')
       .catch(err => {
         res.status(500).send({
           message:
             err.message || "An error occurred while updating account information."
         })
-      })
+      });
+  });
+
+  app.delete('/api/users/:id', async (req, res) => {
+    let id = parseInt(req.params.id)
+    // Log out user before deleting account
+    await User.query()
+      .deleteById(id)
+      .returning('*')
+      .catch(err => {
+        res.status(500).send({
+          message:
+            err.message || "An error occurred while deleting a user account."
+        })
+      });
+  });
+
+  app.get('/api/users/verifyPass', getUserPass, verifyPass, async (req, res) => {
+    if (req.result == true) {
+      res.json(req.result);
+    }
+    else {
+      res.json(req.result);
+      res.status(400).send(
+        "Password does not match."
+      )
+    }
   });
 };
