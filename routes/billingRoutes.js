@@ -19,7 +19,6 @@ module.exports = app => {
 
   app.post('/api/stripe/create-payment-intent', validatePrices, async (req, res) => {
     // Print a msg saying prices changed if they were different from client
-    console.log("Stripe order price: ", Math.round(req.price * 100));
     try {
       const paymentIntent = await stripe.paymentIntents.create({
         // Price is converted to cents for Stripe to accept it
@@ -49,7 +48,6 @@ module.exports = app => {
   // create a new order
   app.post("/api/paypal/create-paypal-order", validatePrices, async (req, res) => {
     try {
-      console.log("Paypal order price: ", req.price.toFixed(2));
       const order = await createOrder(req.price.toFixed(2));
       res.json(order);
     } catch (error) {

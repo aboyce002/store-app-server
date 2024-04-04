@@ -3,11 +3,13 @@ require('./services/passport');
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
-const app = express();
 const cookieSession = require('cookie-session');
 const passport = require('passport');
+const flash = require('express-flash');
 const keys = require('./config/prodKeys');
 const dbSetup = require('./config/dbSetup');
+
+const app = express();
 
 app.use(cors());
 app.use(bodyParser.json());
@@ -23,7 +25,9 @@ app.use(
     keys: [keys.cookieKey]
   })
 );
+app.use(flash());
 dbSetup();
+// Initialize passport session with cookieSession
 app.use(passport.initialize());
 app.use(passport.session());
 
@@ -42,7 +46,7 @@ if (process.env.NODE_ENV === "production") {
     );
     res.header(
       "Access-Control-Allow-Headers",
-      "Origin, X-Requested-With, Content-Type, Accept"
+      "x-access-token, Origin, X-Requested-With, Content-Type, Accept"
     );
     next();
   });

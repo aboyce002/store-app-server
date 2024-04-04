@@ -10,15 +10,13 @@ module.exports = async (req, res, next) => {
     .whereIn('id', productIds)
     .orderBy('price')
     .then(prices => {
-      console.log("Product cart quantities: ", productCartQuantities);
-      console.log("prices: ", prices);
       req.price = prices.reduce((a, b) => a + parseFloat(b.price * productCartQuantities[prices.indexOf(b)]), 0);
       next();
     })
     .catch(err => {
       res.status(500).send({
         message:
-          err.message || "An error occurred while fetching the addresses for a user."
+          err.message || "An error occurred while fetching product prices."
       })
     })
 };

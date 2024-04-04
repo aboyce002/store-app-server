@@ -38,20 +38,27 @@ module.exports = app => {
 
   // Create a new address
   app.post('/api/userAddresses', async (req, res) => {
-    const { user_id, street, street2, street3, city, state, zip, country } = req.body;
+    const { user_id, first_name, last_name, street, street2, city, state, zip, country } = req.body;
     await UserAddress.query()
       .insert({
         user_id: user_id,
+        first_name: first_name,
+        last_name: last_name,
         street: street,
         street2: street2,
-        street3: street3,
         city: city,
         state: state,
         zip: zip,
         country: country
       })
+      // Make address main address if it's the user's first address
       .then(address => {
-        res.json(address)
+        const user = User.query().findById(user_id);
+        if (!user.main_address)
+          user.patch({
+            main_address: address.id
+          });
+        res.json(address);
       })
       .catch(err => {
         res.status(500).send({
@@ -62,12 +69,14 @@ module.exports = app => {
   });
 
   // Update an address via address id
-  app.patch('/api/userAddress/:id', authorize, async (req, res) => {
-    const { user_id, street, street2, street3, city, state, zip, country } = req.body;
+  app.patch('/api/userAddresses/:id', authorize, async (req, res) => {
+    let id = parseInt(req.params.id)
+    const { user_id, first_name, last_name, street, street2, street3, city, state, zip, country } = req.body;
     await UserAddress.query()
-      .findById(id)
-      .patch({
+      .patchAndFetchById(id, {
         user_id: user_id,
+        first_name: first_name,
+        last_name: last_name,
         street: street,
         street2: street2,
         street3: street3,
@@ -76,6 +85,7 @@ module.exports = app => {
         zip: zip,
         country: country
       })
+      .returning('*')
       .then(address => {
         res.json(address)
       })
@@ -88,10 +98,11 @@ module.exports = app => {
   });
 
   // Delete an address via address id
-  app.delete('/api/userAddress/:id', async (req, res) => {
+  app.delete('/api/userAddresses/:id', async (req, res) => {
     let id = parseInt(req.params.id)
     await UserAddress.query()
-      .findById(id)
+      .deleteById(id)
+      .returning('*')
       .then(address => {
         res.json(address)
       })

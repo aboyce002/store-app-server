@@ -2,13 +2,13 @@ const express = require("express");
 const router = express.Router();
 const Product = require("../models/Product");
 
-module.exports = app => { 
+module.exports = app => {
   app.get('/api/product/:id', async (req, res) => {
     let id = parseInt(req.params.id)
     await Product.query()
       .findById(id)
       .then(product => {
-          res.json(product)
+        res.json(product)
       })
       .catch(err => {
         res.status(500).send({
@@ -25,28 +25,28 @@ module.exports = app => {
       .orderBy('id', 'desc')
       .then(product => {
         res.json(product)
-    })
-    .catch(err => {
-      res.status(500).send({
-        message:
-          err.message || "An error occurred while fetching products."
       })
-    })
+      .catch(err => {
+        res.status(500).send({
+          message:
+            err.message || "An error occurred while fetching products."
+        })
+      })
   });
 
   // Maybe a backend filter? Fine on the frontend for now
   app.get('/api/products/filter', async (req, res) => {
     const filters = req.query;
     const data = await Product.query()
-    // do filtering here
-    .orderBy('id', 'desc')
-    .catch(err => {
-      res.status(500).send({
-        filteredProducts,
-        message:
-          err.message || "An error occurred while fetching products."
+      // do filtering here
+      .orderBy('id', 'desc')
+      .catch(err => {
+        res.status(500).send({
+          filteredProducts,
+          message:
+            err.message || "An error occurred while fetching products."
+        })
       })
-    })
 
     const filteredProducts = data.filter(product => {
       let isValid = true;
@@ -56,7 +56,7 @@ module.exports = app => {
       }
       return isValid;
     })
-    
+
     res.json(filteredProducts)
   });
 
