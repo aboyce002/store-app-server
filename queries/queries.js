@@ -44,3 +44,13 @@ const addOrderDetails = (request, response) => {
   pool.query(`INSERT INTO order_details(order_id, product_id, product_title, price, quantity, total)
   VALUES (1, 3, 'Blue Dragon Print', 49.9900, 2, 99.9800);`)
 }
+
+const createOrder = (request, response) => {
+  pool.query(`INSERT INTO order(user_id, address_id, provider, status, preorder, paid, discount, total, date_created, ship_date, order_fulfilled, shipped_by, tracking_number)
+  VALUES (3, 'stripe', 'fulfilled', false, true, '2022-05-23', 2, 99.9800);`)
+}
+
+const createOrderDetails = (request, response) => {
+  pool.query(`INSERT INTO order_details(price, quantity, discount, total, product_id, product_total)
+  VALUES (1, 3, 'Blue Dragon Print', 49.9900, 2, 99.9800);`)
+}

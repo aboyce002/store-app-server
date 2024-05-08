@@ -1,4 +1,3 @@
-const { ref, raw } = require('objection');
 const passport = require('passport');
 const jwt = require("jsonwebtoken");
 const { JWT_SECRET_KEY } = process.env;
@@ -8,7 +7,6 @@ const encryptPass = require('../middlewares/encryptPass');
 const getUserPass = require('../middlewares/getUserPassFromEmail')
 const User = require("../models/User");
 const confirmPassConstraints = require('../middlewares/confirmPassConstraints');
-const User_Address = require('../models/User_Address');
 const verifyAddress = require('../middlewares/verifyAddress');
 
 module.exports = app => {
@@ -31,7 +29,7 @@ module.exports = app => {
     res.redirect('/');
   });
 
-  app.post('/api/users/login', function (req, res, next) {
+  app.post('/api/users/login', async (req, res, next) => {
     passport.authenticate('local', {
       successRedirect: '/',
       failureRedirect: '/login',

@@ -12,7 +12,7 @@ class User_Address extends Model {
   static get jsonSchema() {
     return {
       type: 'object',
-      required: ['user_id', 'first_name', 'last_name', 'street', 'zip', 'country'],
+      required: ['first_name', 'last_name', 'street', 'zip', 'country'],
       properties: {
         id: { type: 'integer' },
         user_id: { type: 'integer' },

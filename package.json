@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "engines": {
-    "node": "18.9.1",
+    "node": "20.12.2",
     "npm": "8.19.2"
   },
   "scripts": {
@@ -17,25 +17,28 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "axios": "^0.21.1",
-    "bcrypt": "^5.1.0",
-    "body-parser": "^1.19.0",
-    "concurrently": "^6.0.2",
-    "cookie-session": "^1.4.0",
+    "axios": "^1.6.8",
+    "bcrypt": "^5.1.1",
+    "body-parser": "^1.20.2",
+    "concurrently": "^8.2.2",
+    "cookie-session": "^2.1.0",
     "cors": "^2.8.5",
-    "dotenv": "^10.0.0",
-    "express": "^4.17.1",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
     "express-flash": "^0.0.2",
+    "express-session": "^1.18.0",
     "jsonwebtoken": "^9.0.2",
-    "knex": "^2.4.2",
-    "nodemon": "^2.0.7",
-    "objection": "^3.0.1",
-    "passport": "^0.5.2",
-    "passport-google": "^0.1.0",
+    "knex": "^3.1.0",
+    "nodemon": "^3.1.0",
+    "npm-check-updates": "^16.14.20",
+    "objection": "^3.1.4",
+    "passport": "^0.7.0",
+    "passport-google": "^0.3.0",
     "passport-google-oauth20": "^2.0.0",
     "passport-local": "^1.0.0",
-    "pg": "^8.6.0",
-    "redux-thunk": "^2.3.0",
-    "stripe": "^11.12.0"
+    "pg": "^8.11.5",
+    "redux-thunk": "^3.1.0",
+    "socket.io": "^4.7.5",
+    "stripe": "^15.4.0"
   }
 }

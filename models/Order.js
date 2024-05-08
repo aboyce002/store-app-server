@@ -12,7 +12,11 @@ class Order extends Model {
   static get jsonSchema() {
     return {
       type: 'object',
-      required: ['user_id', 'address_id', 'provider', 'status', 'preorder', 'paid', 'date_created', 'total'],
+      required: ['address_id', 'provider', 'status', 'preorder', 'paid', 'date_created', 'total'],
+      anyOf: [
+        { required: ['user_id'] },
+        { required: ['email'] }
+      ],
 
       // Add discount model?
       properties: {
@@ -22,6 +26,7 @@ class Order extends Model {
         // Edit this later with the actual address info at the time of order placement because it's gg if the user deletes the address
         // Used on order page #4
         address_id: { type: 'integer' },
+        email: { type: 'string' },
         provider: {
           type: 'string',
           enum: ['stripe', 'paypal', 'other'],
@@ -43,7 +48,7 @@ class Order extends Model {
         // Used on order page #2
         date_created: { type: 'date' },
         ship_date: { type: 'date' },
-        order_fufilled: { type: 'date' }
+        order_fufilled_date: { type: 'date' }
       }
     };
   }
