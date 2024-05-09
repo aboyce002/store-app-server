@@ -4,6 +4,7 @@ const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const session = require('express-session');
+const MemoryStore = require('memorystore')(session)
 const passport = require('passport');
 const flash = require('express-flash');
 const keys = require('./config/prodKeys');
@@ -27,6 +28,9 @@ app.use(
 )
 app.use(express.json());
 app.use(session({
+  store: new MemoryStore({
+    checkPeriod: 86400000 // prune expired entries every 24h
+  }),
   secret: keys.cookieKey,
   resave: false,
   saveUninitialized: false
