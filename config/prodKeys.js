@@ -11,5 +11,7 @@ module.exports = {
     stripeSecretKey: process.env.STRIPE_SECRET_KEY,
     paypalClientID: process.env.PAYPAL_CLIENT_ID,
     paypalSecretKey: process.env.PAYPAL_CLIENT_SECRET,
-    JWTSecretKey: process.env.JWT_SECRET_KEY
+    JWTSecretKey: process.env.JWT_SECRET_KEY,
+    FRONTEND_URL: process.env.FRONTEND_URL,
+    BACKEND_URL: process.env.BACKEND_URL
 };
