@@ -69,7 +69,7 @@ if (process.env.NODE_ENV === "production") {
   app.use((req, res, next) => {
     res.header(
       "Access-Control-Allow-Origin",
-      "https://store-app-client-beige.vercel.app/"
+      "https://store-app-client-beige.vercel.app
     );
     res.header(
       "Access-Control-Allow-Headers",
